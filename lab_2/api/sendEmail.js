@@ -1,5 +1,6 @@
 import { createTransport } from 'nodemailer';
 import sanitizeHtml from 'sanitize-html';
+require('dotenv').config();
 
 const from = `Form - ${process.env.EMAIL_ADRESS}`;
 const history = new Map();

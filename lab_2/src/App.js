@@ -80,7 +80,7 @@ class App extends React.Component {
       const name = sanitizeHtml(this.state.fields["name"]);
       const info = sanitizeHtml(this.state.fields["info"]);
 
-      let url = "../api/sendEmail";
+      let url = "/api/sendEmail";
       try {
           const formData = {
             'email': email,
