@@ -106,28 +106,6 @@ class App extends React.Component {
       }
       
       console.log('Sended to: ' + email);
-      const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          mail: email,
-          name: name,
-          info: info
-        })
-      };
-      fetch('https://lab2kpiweb.herokuapp.com/v1/graphql', requestOptions)
-          .then(response => response.json())
-          .then(
-            () => {
-                this.setState({isLoaded: true});
-            },
-            (error) => {
-                this.setState({isLoaded: true});
-                this.setState({error: error});
-            }
-          )
-
-      console.log('Sended to: ' + this.state.email);
       console.log(this.state.error);
       this.setState({sended: true});
     }
