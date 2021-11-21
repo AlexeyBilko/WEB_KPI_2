@@ -79,6 +79,33 @@ class App extends React.Component {
       const name = sanitizeHtml(this.state.fields["name"]);
       const info = sanitizeHtml(this.state.fields["info"]);
 
+      let url = "../api/sendEmail";
+      try {
+          const formData = {
+            'email': email,
+            'name': name,
+            'info': info
+          }
+          const promice = fetch(url, {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+            },
+            body: JSON.stringify(formData)
+          });
+          let status = promice.status;
+          if (status === 200) {
+            console.log('Sucsessful!');
+          } else if(status === 402) {
+            console.log('Validation error!');
+          } else if(status === 429){
+            console.log('Too many requests!');
+          }
+      } catch (exception) {
+          console.log('Unexpected error!');
+      }
+      
+      console.log('Sended to: ' + email);
       const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
