@@ -75,32 +75,38 @@ class App extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
     if(this.handleValidation()){
+
       const email = sanitizeHtml(this.state.fields["email"]);
       const name = sanitizeHtml(this.state.fields["name"]);
       const info = sanitizeHtml(this.state.fields["info"]);
 
-      const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          mail: email,
-          name: name,
-          info: info
-        })
-      };
-      fetch('https://lab2kpiweb.herokuapp.com/v1/graphql', requestOptions)
-          .then(response => response.json())
-          .then(
-            () => {
-                this.setState({isLoaded: true});
+      let url = "../api/sendEmail";
+      try {
+          const formData = {
+            'email': email,
+            'name': name,
+            'info': info
+          }
+          const promice = fetch(url, {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json;charset=utf-8'
             },
-            (error) => {
-                this.setState({isLoaded: true});
-                this.setState({error: error});
-            }
-          )
-
-      console.log('Sended to: ' + this.state.email);
+            body: JSON.stringify(formData)
+          });
+          let status = promice.status;
+          if (status === 200) {
+            console.log('Sucsessful!');
+          } else if(status === 402) {
+            console.log('Validation error!');
+          } else if(status === 429){
+            console.log('Too many requests!');
+          }
+      } catch (exception) {
+          console.log('Unexpected error!');
+      }
+      
+      console.log('Sended to: ' + email);
       console.log(this.state.error);
       this.setState({sended: true});
     }
