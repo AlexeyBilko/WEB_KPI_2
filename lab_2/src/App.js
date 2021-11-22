@@ -86,7 +86,7 @@ class App extends React.Component {
             'name': name,
             'info': info
           }
-          const promice = fetch(url, {
+          const promice = await fetch(url, {
             method: 'POST',
             headers: {
             'Content-Type': 'application/json;charset=utf-8'
