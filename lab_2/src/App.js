@@ -86,21 +86,21 @@ class App extends React.Component {
             'name': name,
             'info': info
           }
-          const promice = await fetch(url, {
+          fetch(url, {
             method: 'POST',
             headers: {
             'Content-Type': 'application/json;charset=utf-8'
             },
             body: JSON.stringify(formData)
           });
-          let status = promice.status;
-          if (status === 200) {
-            console.log('Sucsessful!');
-          } else if(status === 402) {
-            console.log('Validation error!');
-          } else if(status === 429){
-            console.log('Too many requests!');
-          }
+          // let status = promice.status;
+          // if (status === 200) {
+          //   console.log('Sucsessful!');
+          // } else if(status === 402) {
+          //   console.log('Validation error!');
+          // } else if(status === 429){
+          //   console.log('Too many requests!');
+          // }
       } catch (exception) {
           console.log('Unexpected error!');
       }
