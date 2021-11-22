@@ -35,17 +35,17 @@ module.exports = (req, res) => {
   });
 };
 
-async function sendMail(options) {
+function sendMail(options) {
   try {
     const transport = getTransporter();
-    await transport.sendMail(options);
+    transport.sendMail(options);
     return { success: true };
   } catch (error) {
     throw new Error(error?.message);
   }
 }
 
-async function formSubmit(formData) {
+function formSubmit(formData) {
   let html = '';
   for (const option in formData) {
     html += option + ' : ' + formData[option] + '<br/>';
@@ -58,13 +58,13 @@ async function formSubmit(formData) {
   });
 }
 
-module.exports = async (req, res) => {
+module.exports = (req, res) => {
   try {
     rateLimit(req.headers['x-real-ip'], 5);
   } catch (e) {
     return res.status(429).json();
   }
-  const result = await formSubmit(req.body);
+  const result = formSubmit(req.body);
   res.json({ result });
 };
 
