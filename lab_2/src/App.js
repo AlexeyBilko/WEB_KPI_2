@@ -95,7 +95,8 @@ class App extends React.Component {
           }).then(function(response) {
             console.log(response.status);
             if (response.status === 200) {
-            console.log('Sucsessful!');
+              console.log('Sended to: ' + email);
+              console.log('Sucsessful!');
             } else if(response.status === 402) {
               console.log('Validation error!');
             } else if(response.status === 429){
@@ -107,7 +108,6 @@ class App extends React.Component {
           console.log('Unexpected error!');
       }
       
-      console.log('Sended to: ' + email);
       console.log(this.state.error);
       this.setState({sended: true});
     }
