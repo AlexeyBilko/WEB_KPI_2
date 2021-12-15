@@ -50,6 +50,7 @@ function formSubmit(formData) {
   for (const option in formData) {
     html += option + ' : ' + formData[option] + '<br/>';
   }
+  console.log(process.env.EMAIL_TO_USER);
   return sendMail({
     from,
     to: process.env.EMAIL_TO_USER,
