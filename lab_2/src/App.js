@@ -92,15 +92,17 @@ class App extends React.Component {
             'Content-Type': 'application/json;charset=utf-8'
             },
             body: JSON.stringify(formData)
-          });
-          // let status = promice.status;
-          // if (status === 200) {
-          //   console.log('Sucsessful!');
-          // } else if(status === 402) {
-          //   console.log('Validation error!');
-          // } else if(status === 429){
-          //   console.log('Too many requests!');
-          // }
+          }).then(function(response) {
+            console.log(response.status);
+            if (response.status === 200) {
+            console.log('Sucsessful!');
+            } else if(response.status === 402) {
+              console.log('Validation error!');
+            } else if(response.status === 429){
+              console.log('Too many requests!');
+            }
+          }
+          )
       } catch (exception) {
           console.log('Unexpected error!');
       }
