@@ -118,7 +118,7 @@ class App extends React.Component {
   }
 
   render() {
-    if (isLoaded) {
+    if (this.state.isLoaded) {
       return (
         <>
           <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
