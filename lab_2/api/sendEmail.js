@@ -1,6 +1,8 @@
 import { createTransport } from 'nodemailer';
 import sanitizeHtml from 'sanitize-html';
+
 require('dotenv').config();
+
 
 const from = `Form - ${process.env.EMAIL_ADRESS}`;
 const history = new Map();
@@ -35,6 +37,7 @@ module.exports = (req, res) => {
   });
 };
 
+
 function sendMail(options) {
   try {
     const transport = getTransporter();
@@ -44,6 +47,7 @@ function sendMail(options) {
     throw new Error(error?.message);
   }
 }
+
 
 function formSubmit(formData) {
   let html = '';
@@ -58,6 +62,7 @@ function formSubmit(formData) {
     html: sanitizeHtml(html),
   });
 }
+
 
 module.exports = (req, res) => {
   try {
