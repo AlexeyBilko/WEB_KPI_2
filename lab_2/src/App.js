@@ -13,7 +13,7 @@ class App extends React.Component {
       error: '',
       sended: '',
       unexpected: '',
-      isLoaded: true
+      isLoaded: false
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -74,7 +74,7 @@ class App extends React.Component {
   }
 
   handleSubmit(event) {
-    this.state.isLoaded = true;
+    this.setState({isLoaded: true});
     event.preventDefault();
     if(this.handleValidation()){
       const email = sanitizeHtml(this.state.fields["email"]);
@@ -103,9 +103,9 @@ class App extends React.Component {
             }
           }
           )
-          this.state.isLoaded = false;
+          this.setState({isLoaded: false});
       } catch (exception) {
-          this.state.unexpected = 'error';
+        this.setState({unexpected: 'error'});
           console.log('Unexpected error!');
       }
       
