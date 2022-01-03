@@ -11,7 +11,6 @@ class App extends React.Component {
       fields: {},
       errors: {},
       error: '',
-      isLoaded: '',
       sended: '',
       unexpected: '',
       isLoaded: true
