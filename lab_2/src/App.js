@@ -12,7 +12,9 @@ class App extends React.Component {
       errors: {},
       error: '',
       isLoaded: '',
-      sended: ''
+      sended: '',
+      unexpected: '',
+      isLoaded: true
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -73,6 +75,7 @@ class App extends React.Component {
   }
 
   handleSubmit(event) {
+    this.state.isLoaded = true;
     event.preventDefault();
     if(this.handleValidation()){
       const email = sanitizeHtml(this.state.fields["email"]);
@@ -81,11 +84,7 @@ class App extends React.Component {
 
       let url = "/api/sendEmail";
       try {
-          const formData = {
-            'email': email,
-            'name': name,
-            'info': info
-          }
+          const formData = {email,name,info}
           fetch(url, {
             method: 'POST',
             headers: {
@@ -97,6 +96,7 @@ class App extends React.Component {
             if (response.status === 200) {
               console.log('Sended to: ' + email);
               console.log('Sucsessful!');
+              this.setState({sended: true});
             } else if(response.status === 402) {
               console.log('Validation error!');
             } else if(response.status === 429){
@@ -104,12 +104,13 @@ class App extends React.Component {
             }
           }
           )
+          this.state.isLoaded = false;
       } catch (exception) {
+          this.state.unexpected = 'error';
           console.log('Unexpected error!');
       }
       
       console.log(this.state.error);
-      this.setState({sended: true});
     }
     else{
       console.log('error');
@@ -117,33 +118,45 @@ class App extends React.Component {
   }
 
   render() {
-    return (
-      <main>
-        <div style={{display: this.state.sended ? "block" : "none" }} className="successSend">
-          <label>Success</label>
-        </div>
-        <div style={{ display: this.state.errors["name"] || this.state.errors["email"] || this.state.errors["info"] ? "block" : "none" }} className="errorSend">
-          <label>Error occured</label>
-        </div>
-        <div className="container">
-          <div className="inputs">
-            <form onSubmit= {this.handleSubmit}>
-              <div className="form_title">FORM "LAB_2"</div>
-              <label>EMAIL</label>
-              <input type="text" onChange={this.handleChange.bind(this, "email")} value={this.state.fields["email"]} placeholder="example@test.com" />
-              <span style={{color: "red"}}>{this.state.errors["email"]}</span>
-              <label>NAME</label>
-              <input type="text" onChange={this.handleChange.bind(this, "name")} value={this.state.fields["name"]} placeholder="Only letters" />
-              <span style={{color: "red"}}>{this.state.errors["name"]}</span>
-              <label>INFO</label>
-              <input type="text"  onChange={this.handleChange.bind(this, "info")} value={this.state.fields["info"]} placeholder="Min 10 charaters long" />
-              <span style={{color: "red"}}>{this.state.errors["info"]}</span>
-              <button type="submit">Send</button>
-            </form>
+    if (isLoaded) {
+      return (
+        <>
+          <div class="lds-spinner"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+        </>
+      )
+    }
+    else {
+      return (
+        <main>
+          <div style={{display: this.state.sended ? "block" : "none" }} className="successSend">
+            <label>Success</label>
           </div>
-        </div>
-      </main>
-    )
+          <div style={{ display: this.state.errors["unexpected"] ? "block" : "none" }} className="errorSend">
+            <label>Unexpected error</label>
+          </div>
+          <div style={{ display: this.state.errors["name"] || this.state.errors["email"] || this.state.errors["info"] ? "block" : "none" }} className="errorSend">
+            <label>Error occured</label>
+          </div>
+          <div className="container">
+            <div className="inputs">
+              <form onSubmit= {this.handleSubmit}>
+                <div className="form_title">FORM "LAB_2"</div>
+                <label>EMAIL</label>
+                <input type="text" onChange={this.handleChange.bind(this, "email")} value={this.state.fields["email"]} placeholder="example@test.com" />
+                <span style={{color: "red"}}>{this.state.errors["email"]}</span>
+                <label>NAME</label>
+                <input type="text" onChange={this.handleChange.bind(this, "name")} value={this.state.fields["name"]} placeholder="Only letters" />
+                <span style={{color: "red"}}>{this.state.errors["name"]}</span>
+                <label>INFO</label>
+                <input type="text"  onChange={this.handleChange.bind(this, "info")} value={this.state.fields["info"]} placeholder="Min 10 charaters long" />
+                <span style={{color: "red"}}>{this.state.errors["info"]}</span>
+                <button type="submit">Send</button>
+              </form>
+            </div>
+          </div>
+        </main>
+      )
+    }
   }
 }
 
