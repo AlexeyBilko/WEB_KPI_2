@@ -11,7 +11,7 @@ class App extends React.Component {
       fields: {},
       errors: {},
       error: '',
-      sended: '',
+      sended: false,
       unexpected: '',
       isLoaded: false
     };
@@ -106,7 +106,8 @@ class App extends React.Component {
           this.setState({isLoaded: false});
       } catch (exception) {
         this.setState({unexpected: 'error'});
-          console.log('Unexpected error!');
+        this.setState({isLoaded: false});
+        console.log('Unexpected error!');
       }
       
       console.log(this.state.error);
