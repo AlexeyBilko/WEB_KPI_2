@@ -82,6 +82,7 @@ class App extends React.Component {
       const info = sanitizeHtml(this.state.fields["info"]);
 
       let url = "/api/sendEmail";
+      let sendedFine = false;
       try {
           const formData = {email,name,info}
           fetch(url, {
@@ -93,16 +94,20 @@ class App extends React.Component {
           }).then(function(response) {
             console.log(response.status);
             if (response.status === 200) {
-              console.log('Sended to: ' + email);
+              sendedFine = true;
+              console.log('Sended');
               console.log('Sucsessful!');
-              this.setState({sended: true});
             } else if(response.status === 402) {
               console.log('Validation error!');
             } else if(response.status === 429){
               console.log('Too many requests!');
+              this.setState({unexpected: 'error'});
             }
           }
           )
+          if(sendedFine){
+            this.setState({sended: true});
+          }
           this.setState({isLoaded: false});
       } catch (exception) {
         this.setState({unexpected: 'error'});
@@ -113,7 +118,7 @@ class App extends React.Component {
       console.log(this.state.error);
     }
     else{
-      this.setState({sended: true});
+      this.setState({sended: false});
       console.log('error');
       this.setState({isLoaded: false});
     }
