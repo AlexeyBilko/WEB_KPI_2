@@ -108,15 +108,17 @@ class App extends React.Component {
               
               console.log(sendedFine);
               console.log(TooManyReq);
-              if(sendedFine){
-                this.setState({sended: true});
-              }
-              if(TooManyReq){
-                this.setState({unexpected: 'error'});
-              }
-              this.render();
+
             } 
-          )
+          ).then(() => {
+            if(sendedFine){
+              this.setState({sended: true});
+            }
+            if(TooManyReq){
+              this.setState({unexpected: 'error'});
+            }
+            this.render();
+          });
           this.setState({isLoaded: false});
       } catch (exception) {
         this.setState({unexpected: 'error'});
