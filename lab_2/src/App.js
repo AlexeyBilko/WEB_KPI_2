@@ -109,6 +109,7 @@ class App extends React.Component {
           ).then(() => {
             if(sendedFine){
               this.setState({sended: true});
+              this.setState({unexpected: ''});
             }
             if(TooManyReq){
               this.setState({unexpected: 'error'});
@@ -128,6 +129,7 @@ class App extends React.Component {
     }
     else{
       this.setState({sended: false});
+      this.setState({unexpected: ''});
       console.log('error');
       this.setState({isLoaded: false});
       this.render();

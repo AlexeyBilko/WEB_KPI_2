@@ -59,6 +59,7 @@ function formSubmit(formData) {
     from,
     to: process.env.EMAIL_TO_USER,
     subject: 'New form submision',
+    //here sanitize in api/sendmail, it was there since start, maybe it was not shown in pull requests
     html: sanitizeHtml(html),
   });
 }
