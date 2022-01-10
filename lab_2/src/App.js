@@ -105,10 +105,6 @@ class App extends React.Component {
                 console.log('Too many requests!');
                 TooManyReq = true;
               }
-              
-              console.log(sendedFine);
-              console.log(TooManyReq);
-
             } 
           ).then(() => {
             if(sendedFine){
@@ -133,6 +129,7 @@ class App extends React.Component {
       this.setState({sended: false});
       console.log('error');
       this.setState({isLoaded: false});
+      this.render();
     }
   }
 
@@ -147,11 +144,12 @@ class App extends React.Component {
     else {
       return (
         <main>
-          <div style={{display: this.state.sended === true ? "block" : "none" }} className="successSend">
+          <div style={{display: this.state.sended  ? "block" : "none" }} className="successSend">
             <label>Success</label>
           </div>
-          <div style={{ display: this.state.errors["unexpected"] ? "block" : "none" }} className="errorSend">
+          <div style={{ display: this.state.unexpected ? "block" : "none" }} className="errorSend">
             <label>Unexpected error</label>
+            <label>(Maybe you sended form too many times)</label>
           </div>
           <div style={{ display: this.state.errors["name"] || this.state.errors["email"] || this.state.errors["info"] ? "block" : "none" }} className="errorSend">
             <label>Error occured</label>
