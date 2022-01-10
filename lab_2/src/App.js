@@ -94,18 +94,28 @@ class App extends React.Component {
             },
             body: JSON.stringify(formData)
           }).then(function(response) {
-            console.log(response.status);
-            if (response.status === 200) {
-              sendedFine = true;
-              console.log('Sended');
-              console.log('Sucsessful!');
-            } else if(response.status === 402) {
-              console.log('Validation error!');
-            } else if(response.status === 429){
-              console.log('Too many requests!');
-              TooManyReq = true;
-            }
-          }
+              console.log(response.status);
+              if (response.status === 200) {
+                sendedFine = true;
+                console.log('Sended');
+                console.log('Sucsessful!');
+              } else if(response.status === 402) {
+                console.log('Validation error!');
+              } else if(response.status === 429){
+                console.log('Too many requests!');
+                TooManyReq = true;
+              }
+              
+              console.log(sendedFine);
+              console.log(TooManyReq);
+              if(sendedFine){
+                this.setState({sended: true});
+              }
+              if(TooManyReq){
+                this.setState({unexpected: 'error'});
+              }
+              this.render();
+            } 
           )
           this.setState({isLoaded: false});
       } catch (exception) {
@@ -122,15 +132,6 @@ class App extends React.Component {
       console.log('error');
       this.setState({isLoaded: false});
     }
-    console.log(sendedFine);
-    console.log(TooManyReq);
-    if(sendedFine){
-      this.setState({sended: true});
-    }
-    if(TooManyReq){
-      this.setState({unexpected: 'error'});
-    }
-    this.render();
   }
 
   render() {
