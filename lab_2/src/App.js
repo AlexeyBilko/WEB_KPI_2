@@ -113,7 +113,9 @@ class App extends React.Component {
       console.log(this.state.error);
     }
     else{
+      this.setState({sended: true});
       console.log('error');
+      this.setState({isLoaded: false});
     }
   }
 
