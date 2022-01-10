@@ -83,6 +83,7 @@ class App extends React.Component {
 
       let url = "/api/sendEmail";
       let sendedFine = false;
+      let TooManyReq = false;
       try {
           const formData = {email,name,info}
           fetch(url, {
@@ -101,18 +102,23 @@ class App extends React.Component {
               console.log('Validation error!');
             } else if(response.status === 429){
               console.log('Too many requests!');
-              this.setState({unexpected: 'error'});
+              TooManyReq = true;
             }
           }
           )
           if(sendedFine){
             this.setState({sended: true});
           }
+          if(TooManyReq){
+            this.setState({unexpected: 'error'});
+          }
+          this.render();
           this.setState({isLoaded: false});
       } catch (exception) {
         this.setState({unexpected: 'error'});
         this.setState({isLoaded: false});
         console.log('Unexpected error!');
+        this.render();
       }
       
       console.log(this.state.error);
