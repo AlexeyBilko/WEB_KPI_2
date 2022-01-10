@@ -112,6 +112,7 @@ class App extends React.Component {
             }
             if(TooManyReq){
               this.setState({unexpected: 'error'});
+              this.setState({sended: false});
             }
             this.render();
           });
