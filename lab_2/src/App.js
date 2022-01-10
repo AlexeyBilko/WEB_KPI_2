@@ -122,6 +122,8 @@ class App extends React.Component {
       console.log('error');
       this.setState({isLoaded: false});
     }
+    console.log(sendedFine);
+    console.log(TooManyReq);
     if(sendedFine){
       this.setState({sended: true});
     }
