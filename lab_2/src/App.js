@@ -106,20 +106,12 @@ class App extends React.Component {
             }
           }
           )
-          if(sendedFine){
-            this.setState({sended: true});
-          }
-          if(TooManyReq){
-            this.setState({unexpected: 'error'});
-          }
-          this.render();
           this.setState({isLoaded: false});
       } catch (exception) {
         this.setState({unexpected: 'error'});
         this.setState({isLoaded: false});
         this.setState({sended: false});
         console.log('Unexpected error!');
-        this.render();
       }
       
       console.log(this.state.error);
@@ -129,6 +121,13 @@ class App extends React.Component {
       console.log('error');
       this.setState({isLoaded: false});
     }
+    if(sendedFine){
+      this.setState({sended: true});
+    }
+    if(TooManyReq){
+      this.setState({unexpected: 'error'});
+    }
+    this.render();
   }
 
   render() {
