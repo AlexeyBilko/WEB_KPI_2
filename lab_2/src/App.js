@@ -76,14 +76,15 @@ class App extends React.Component {
   handleSubmit(event) {
     this.setState({isLoaded: true});
     event.preventDefault();
+    
+    let sendedFine = false;
+    let TooManyReq = false;
     if(this.handleValidation()){
       const email = sanitizeHtml(this.state.fields["email"]);
       const name = sanitizeHtml(this.state.fields["name"]);
       const info = sanitizeHtml(this.state.fields["info"]);
 
       let url = "/api/sendEmail";
-      let sendedFine = false;
-      let TooManyReq = false;
       try {
           const formData = {email,name,info}
           fetch(url, {
