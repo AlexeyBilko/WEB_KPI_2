@@ -117,6 +117,7 @@ class App extends React.Component {
       } catch (exception) {
         this.setState({unexpected: 'error'});
         this.setState({isLoaded: false});
+        this.setState({sended: false});
         console.log('Unexpected error!');
         this.render();
       }
@@ -141,7 +142,7 @@ class App extends React.Component {
     else {
       return (
         <main>
-          <div style={{display: this.state.sended ? "block" : "none" }} className="successSend">
+          <div style={{display: this.state.sended === true ? "block" : "none" }} className="successSend">
             <label>Success</label>
           </div>
           <div style={{ display: this.state.errors["unexpected"] ? "block" : "none" }} className="errorSend">
