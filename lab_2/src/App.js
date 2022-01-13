@@ -81,6 +81,7 @@ class App extends React.Component {
     if(!navigator.onLine){
       this.setState({offline : true});
     }
+    else this.setState({offline : false});
 
     let sendedFine = false;
     let TooManyReq = false;
