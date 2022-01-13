@@ -13,7 +13,8 @@ class App extends React.Component {
       error: '',
       sended: false,
       unexpected: '',
-      isLoaded: false
+      isLoaded: false,
+      offline: false
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -77,6 +78,10 @@ class App extends React.Component {
     this.setState({isLoaded: true});
     event.preventDefault();
     
+    if(!navigator.onLine){
+      this.setState({offline : true});
+    }
+
     let sendedFine = false;
     let TooManyReq = false;
     if(this.handleValidation()){
@@ -147,6 +152,9 @@ class App extends React.Component {
     else {
       return (
         <main>
+          <div style={{display: this.state.offline  ? "block" : "none" }} className="errorSend">
+            <label>Internet connection losted</label>
+          </div>
           <div style={{display: this.state.sended  ? "block" : "none" }} className="successSend">
             <label>Success</label>
           </div>
