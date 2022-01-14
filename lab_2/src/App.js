@@ -8,13 +8,10 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      isLoaded: false,
       fields: {},
       errors: {},
-      error: '',
-      sended: false,
-      unexpected: '',
-      isLoaded: false,
-      offline: false
+      msg: ''
     };
 
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -28,20 +25,20 @@ class App extends React.Component {
     //Name
     if(!fields["name"]){
        formIsValid = false;
-       errors["name"] = "Cannot be empty";
+       errors.name = "Cannot be empty";
     }
 
     if(typeof fields["name"] !== "undefined"){
        if(!fields["name"].match(/^[a-zA-Z]+$/)){
           formIsValid = false;
-          errors["name"] = "Only letters";
+          errors.name = "Only letters";
        }        
     }
 
     //Email
-    if(!fields["email"]){
+    if(!fields.email){
        formIsValid = false;
-       errors["email"] = "Cannot be empty";
+       errors.email = "Cannot be empty";
     }
 
     if(typeof fields["email"] !== "undefined"){
@@ -50,18 +47,18 @@ class App extends React.Component {
 
        if (!(lastAtPos < lastDotPos && lastAtPos > 0 && fields["email"].indexOf('@@') === -1 && lastDotPos > 2 && (fields["email"].length - lastDotPos) > 2)) {
           formIsValid = false;
-          errors["email"] = "Email is not valid";
+          errors.email = "Email is not valid";
         }
     }  
 
     //Info
     if(!fields["info"]){
       formIsValid = false;
-      errors["info"] = "Cannot be empty";
+      errors.info = "Cannot be empty";
     }
     else if(fields["info"].length < 10){
       formIsValid = false;
-      errors["info"] = "Less than 10 characters";
+      errors.info = "Less than 10 characters";
     }
 
    this.setState({errors: errors});
@@ -75,23 +72,23 @@ class App extends React.Component {
   }
 
   handleSubmit(event) {
-    this.setState({isLoaded: true});
     event.preventDefault();
+    this.setState({isLoaded: true});
     
     if(!navigator.onLine){
-      this.setState({offline : true});
+      this.setState({msg: 'offline'})
+      return;
     }
-    else this.setState({offline : false});
 
+    this.setState({msg: ''});
     let sendedFine = false;
     let TooManyReq = false;
-    if(this.handleValidation()){
-      const email = sanitizeHtml(this.state.fields["email"]);
-      const name = sanitizeHtml(this.state.fields["name"]);
-      const info = sanitizeHtml(this.state.fields["info"]);
+    if(this.handleValidation()) {
+      const email = sanitizeHtml(this.state.fields.email);
+      const name = sanitizeHtml(this.state.fields.name);
+      const info = sanitizeHtml(this.state.fields.info);
 
       let url = "/api/sendEmail";
-      try {
           const formData = {email,name,info}
           fetch(url, {
             method: 'POST',
@@ -99,47 +96,40 @@ class App extends React.Component {
             'Content-Type': 'application/json;charset=utf-8'
             },
             body: JSON.stringify(formData)
-          }).then(function(response) {
-              console.log(response.status);
+          })
+          .then(function(response) {
               if (response.status === 200) {
                 sendedFine = true;
-                console.log('Sended');
-                console.log('Sucsessful!');
               } else if(response.status === 402) {
-                console.log('Validation error!');
+                this.setState({msg: 'Validation Error'})
               } else if(response.status === 429){
-                console.log('Too many requests!');
                 TooManyReq = true;
               }
+              return response.json();
             } 
-          ).then(() => {
-            if(sendedFine){
-              this.setState({sended: true});
-              this.setState({unexpected: ''});
+          )
+          .then((response) => {
+            if(response.success && sendedFine){
+              this.setState({msg: 'sended'});
             }
             if(TooManyReq){
-              this.setState({unexpected: 'error'});
-              this.setState({sended: false});
+              this.setState({msg: 'toomanyreq'});
             }
             this.render();
-          });
-          this.setState({isLoaded: false});
-      } catch (exception) {
-        this.setState({unexpected: 'error'});
-        this.setState({isLoaded: false});
-        this.setState({sended: false});
-        console.log('Unexpected error!');
-      }
-      
-      console.log(this.state.error);
+          })
+          .catch ((exception) => {
+            this.setState({msg: 'offline'});
+            this.setState({isLoaded: false});
+          })
+
+      this.setState({isLoaded: false});
     }
     else{
-      this.setState({sended: false});
-      this.setState({unexpected: ''});
-      console.log('error');
+      this.setState({msg: 'error occured'});
       this.setState({isLoaded: false});
       this.render();
     }
+    //todo setState -> msg, error
   }
 
   render() {
@@ -153,31 +143,31 @@ class App extends React.Component {
     else {
       return (
         <main>
-          <div style={{display: this.state.offline  ? "block" : "none" }} className="errorSend">
-            <label>Internet connection losted</label>
+          <div style={{display: this.state.msg === 'offline'? "block" : "none" }} className="errorSend">
+            <label>Fetch error</label>
           </div>
-          <div style={{display: this.state.sended  ? "block" : "none" }} className="successSend">
+          <div style={{display: this.state.msg === 'sended'  ? "block" : "none" }} className="successSend">
             <label>Success</label>
           </div>
-          <div style={{ display: this.state.unexpected ? "block" : "none" }} className="errorSend">
+          <div style={{ display: this.state.msg === 'toomanyreq'  ? "block" : "none" }} className="errorSend">
             <label>Unexpected error</label>
             <label>(Maybe you sended form too many times)</label>
           </div>
-          <div style={{ display: this.state.errors["name"] || this.state.errors["email"] || this.state.errors["info"] ? "block" : "none" }} className="errorSend">
-            <label>Error occured</label>
+          <div style={{ display: this.state.msg === 'Validation Error' || this.state.errors["name"] || this.state.errors["email"] || this.state.errors["info"] ? "block" : "none" }} className="errorSend">
+            <label>Validation Error occured</label>
           </div>
           <div className="container">
             <div className="inputs">
               <form onSubmit= {this.handleSubmit}>
                 <div className="form_title">FORM "LAB_2"</div>
                 <label>EMAIL</label>
-                <input type="text" onChange={this.handleChange.bind(this, "email")} value={this.state.fields["email"]} placeholder="example@test.com" />
+                <input type="text" onChange={this.handleChange.bind(this, "email")} value={this.state.fields.email} placeholder="example@test.com" />
                 <span style={{color: "red"}}>{this.state.errors["email"]}</span>
                 <label>NAME</label>
-                <input type="text" onChange={this.handleChange.bind(this, "name")} value={this.state.fields["name"]} placeholder="Only letters" />
+                <input type="text" onChange={this.handleChange.bind(this, "name")} value={this.state.fields.name} placeholder="Only letters" />
                 <span style={{color: "red"}}>{this.state.errors["name"]}</span>
                 <label>INFO</label>
-                <input type="text"  onChange={this.handleChange.bind(this, "info")} value={this.state.fields["info"]} placeholder="Min 10 charaters long" />
+                <input type="text"  onChange={this.handleChange.bind(this, "info")} value={this.state.fields.info} placeholder="Min 10 charaters long" />
                 <span style={{color: "red"}}>{this.state.errors["info"]}</span>
                 <button type="submit">Send</button>
               </form>
