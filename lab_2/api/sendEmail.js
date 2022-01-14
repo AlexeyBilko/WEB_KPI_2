@@ -1,6 +1,9 @@
 import { createTransport } from 'nodemailer';
 import sanitizeHtml from 'sanitize-html';
 
+require('dotenv').config();
+
+
 const from = `Form - ${process.env.EMAIL_ADRESS}`;
 const history = new Map();
 
@@ -34,36 +37,41 @@ module.exports = (req, res) => {
   });
 };
 
-async function sendMail(options) {
+
+function sendMail(options) {
   try {
     const transport = getTransporter();
-    await transport.sendMail(options);
+    transport.sendMail(options);
     return { success: true };
   } catch (error) {
     throw new Error(error?.message);
   }
 }
 
-async function formSubmit(formData) {
+
+function formSubmit(formData) {
   let html = '';
   for (const option in formData) {
     html += option + ' : ' + formData[option] + '<br/>';
   }
+  console.log(process.env.EMAIL_TO_USER);
   return sendMail({
     from,
     to: process.env.EMAIL_TO_USER,
     subject: 'New form submision',
+    //here sanitize in api/sendmail, it was there since start, maybe it was not shown in pull requests
     html: sanitizeHtml(html),
   });
 }
 
-module.exports = async (req, res) => {
+
+module.exports = (req, res) => {
   try {
     rateLimit(req.headers['x-real-ip'], 5);
   } catch (e) {
     return res.status(429).json();
   }
-  const result = await formSubmit(req.body);
+  const result = formSubmit(req.body);
   res.json({ result });
 };
 
