@@ -161,7 +161,7 @@ class App extends React.Component {
               <form onSubmit= {this.handleSubmit}>
                 <div className="form_title">FORM "LAB_2"</div>
                 <label>EMAIL</label>
-                <input type="text" onChange={this.handleChange.bind(this, "email")} value={this.state.fields.email} placeholder="example@test.com" />
+                <input type="text" name="email" onChange={this.handleChange.bind(this, "email")} value={this.state.fields.email} placeholder="example@test.com" />
                 <span style={{color: "red"}}>{this.state.errors["email"]}</span>
                 <label>NAME</label>
                 <input type="text" onChange={this.handleChange.bind(this, "name")} value={this.state.fields.name} placeholder="Only letters" />
